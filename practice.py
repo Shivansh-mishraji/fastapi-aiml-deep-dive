@@ -1,4 +1,4 @@
-from fastapi import FastAPI , HTTPException , UploadFile , File , Depends , Header
+from fastapi import FastAPI , HTTPException , UploadFile , File , Depends , Header , BackgroundTasks
 from pydantic import BaseModel , Field
 from contextlib import asynccontextmanager
 
@@ -136,3 +136,20 @@ async def predict_image(file: UploadFile = File(...),api_key :str = Depends(vari
         "prediction": "cat",    # mocked - in real code: model.predict(contents)
         "confidence": 0.97
     }
+
+import time
+
+# using regular def (not async) because time.sleep is cpu blocking
+# fastapi runs regular def functions in a thread pool automatically
+# this prevents heavy tasks from blocking the main server
+def heavy_model_inference(filename: str):
+    print(f"Background: Starting heavy ML analysis on {filename}...")
+    time.sleep(10)
+    print(f"Background: ML analysis on {filename} is complete!")
+
+# background tasks - user gets a response immediately
+# the heavy work happens in the background without making user wait
+@app.post("/analyze-video")
+def analyze_video(filename: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(heavy_model_inference, filename)
+    return {"status": "Accepted", "message": f"Processing of '{filename}' has started in the background."}
