@@ -259,3 +259,5 @@ This repository is proof of that process: a working, production-aware FastAPI co
 
 Built with purpose, debugged with patience, and documented with honesty.
 If you are on the same journey — building toward a career in AI/ML Engineering — feel free to connect. Every documented mistake in this repo was a real learning moment, and I hope it helps someone else skip the confusion and get to the understanding faster.
+
+<!-- activity:2026-07-13 --> - Improved inline code comments for better readability.
